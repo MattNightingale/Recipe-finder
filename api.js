@@ -6,7 +6,7 @@ function randomRecipe() {
             console.log('data:', data)
             createRandomCard(data)
             const header = document.querySelector('.header')
-            header.backgroundImage = `url(${data.meals[0].strMealThumb})`
+            header.style.backgroundImage = `url(${data.meals[0].strMealThumb})`
         })
         .catch((error) => {
             console.error('Error fetching data:', error)
@@ -15,7 +15,9 @@ function randomRecipe() {
 
 function searchRecipe(e) {
     e.preventDefault()
+    
     const term = document.querySelector('.input').value
+    if (term) {
     const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${term}`
     fetch(url)
         .then((res) => res.json())
@@ -26,9 +28,8 @@ function searchRecipe(e) {
         })
         .catch((error) => {
             console.error('Error fetching data:', error)
-        })
-        removeRandomRecipe()
-        removeSearchRecipe()
+        }), removeRecipe(), clearInput()
+    }
 }
 
 function createRandomCard(data) {
@@ -44,9 +45,10 @@ function createRandomCard(data) {
 
 function createRecipeCard(searchData) {
     searchData.meals.forEach((meal) => {
-        var card = document.createElement('div')
+        var box = document.querySelector('.recipecontainer')
+        var card = document.createElement('recipecontainer')
         card.classList.add('searchrecipe')
-        document.body.appendChild(card)
+        box.appendChild(card)
         var newTitle = document.createElement('h2')
         newTitle.textContent = meal.strMeal
         card.appendChild(newTitle)
@@ -59,14 +61,15 @@ function createRecipeCard(searchData) {
     })
 }
 
-function removeRandomRecipe() {
-    const removal = document.querySelector('.randomrecipe')
-    removal.remove('randomRecipe')
+function removeRecipe() {
+    const toRemove = document.querySelector('.recipecontainer')
+    while (toRemove.hasChildNodes()) {
+        toRemove.removeChild(toRemove.firstChild)
+    }
 }
 
-function removeSearchRecipe() {
-    const removal = document.querySelector('.searchrecipe')
-    removal.remove('searchRecipe')
+function clearInput() {
+    document.querySelector('.input').value = ''
 }
 
 const searchButton = document.querySelector('.searchbutton')
